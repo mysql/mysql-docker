@@ -38,7 +38,7 @@ if [ "$1" = 'mysqlrouter' ]; then
     done
     echo "Succesfully contacted mysql server at $MYSQL_HOST. Checking for cluster state."
     attempt_num=0
-    until [ "$(mysql -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "$MYSQL_HOST" -P "$MYSQL_PORT" -N performance_schema -e "select count(MEMBER_STATE) = $MYSQL_INNODB_NUM_MEMBERS from replication_group_members where MEMBER_STATE = 'ONLINE';" 2> /dev/null)" -eq 1 ]; do
+    until [ "$(mysql -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "$MYSQL_HOST" -P "$MYSQL_PORT" -N mysql_innodb_cluster_metadata -e "select count(*) = $MYSQL_INNODB_NUM_MEMBERS FROM instances WHERE replicaset_id = (SELECT replicaset_id FROM instances WHERE mysql_server_uuid = @@server_uuid);" 2> /dev/null)" -eq 1 ]; do
 	    echo "Waiting for $MYSQL_INNODB_NUM_MEMBERS cluster instances to become available via $MYSQL_HOST ($attempt_num/$max_tries)"
 	    sleep $(( attempt_num++ ))
 	    if (( attempt_num == max_tries )); then
