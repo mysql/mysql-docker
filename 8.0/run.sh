@@ -27,7 +27,7 @@ if [ "$1" = 'mysqlrouter' ]; then
     fi
 
     echo $MYSQL_PASSWORD > /tmp/mysqlrouter-pass
-    unset $MYSQL_PASSWORD
+    unset MYSQL_PASSWORD
     max_tries=12
     attempt_num=0
     until (echo > "/dev/tcp/$MYSQL_HOST/$MYSQL_PORT") >/dev/null 2>&1; do
