@@ -103,7 +103,7 @@ if [ "$1" = 'mysqld' ]; then
 
 		mysql_tzinfo_to_sql /usr/share/zoneinfo | %%SED_TZINFO%%"${mysql[@]}" mysql
 		
-		if [ ! -z "$MYSQL_RANDOM_ROOT_PASSWORD" ]; then
+		if [ "$MYSQL_RANDOM_ROOT_PASSWORD" == "yes" -o "$MYSQL_RANDOM_ROOT_PASSWORD" == "true" ]; then
 			MYSQL_ROOT_PASSWORD="$(pwmake 128)"
 			echo "[Entrypoint] GENERATED ROOT PASSWORD: $MYSQL_ROOT_PASSWORD"
 		fi
