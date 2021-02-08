@@ -53,7 +53,7 @@ if [ "$1" = 'mysqld' ]; then
 		fi
 	fi
 
-	if [ ! -d "$DATADIR/mysql" ]; then
+	if [[ ! -d "$DATADIR/mysql"   || ! `ls -A $DATADIR/mysql` ]]; then
 		# If the password variable is a filename we use the contents of the file. We
 		# read this first to make sure that a proper error is generated for empty files.
 		if [ -f "$MYSQL_ROOT_PASSWORD" ]; then
