@@ -61,7 +61,7 @@ EOF
       done
       echo "Successfully contacted cluster with $MYSQL_INNODB_CLUSTER_MEMBERS members. Bootstrapping."
     fi
-    echo "Succesfully contacted mysql server at $MYSQL_HOST. Trying to bootstrap."
+    echo "Successfully contacted mysql server at $MYSQL_HOST. Trying to bootstrap."
     mysqlrouter --bootstrap "$MYSQL_USER@$MYSQL_HOST:$MYSQL_PORT" --user=mysqlrouter --directory /tmp/mysqlrouter --force < "$PASSFILE"
     sed -i -e 's/logging_folder=.*$/logging_folder=/' /tmp/mysqlrouter/mysqlrouter.conf
     echo "Starting mysql-router."
