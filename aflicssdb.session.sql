@@ -1,1 +1,1 @@
-select * from USER_RESOURCES;
+select * from DATABASES;
