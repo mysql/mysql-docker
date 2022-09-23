@@ -40,6 +40,8 @@ COPY cnf/mysql-cluster.cnf /etc/
 
 ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
+
+USER mysql
 EXPOSE 3306 33060 2202 1186
 CMD ["mysqld"]
 

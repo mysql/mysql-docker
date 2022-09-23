@@ -39,6 +39,8 @@ COPY docker-entrypoint.sh /entrypoint.sh
 COPY healthcheck.sh /healthcheck.sh
 ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
+
+USER mysql
 EXPOSE 3306 33060
 CMD ["mysqld"]
 
