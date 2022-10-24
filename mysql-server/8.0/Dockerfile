@@ -37,6 +37,7 @@ ENV MYSQL_UNIX_PORT /var/lib/mysql/mysql.sock
 
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY healthcheck.sh /healthcheck.sh
+COPY my.cnf /etc/my.cnf
 ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
 EXPOSE 3306 33060 33061
