@@ -31,6 +31,8 @@ REPO_NAME_TOOLS=mysql-tools-community; [ -n "$5" ] && REPO_NAME_TOOLS=$5
 MYSQL_SERVER_PACKAGE_NAME="mysql-community-server-minimal"; [ -n "$6" ] && MYSQL_SERVER_PACKAGE_NAME=$6
 MYSQL_SHELL_PACKAGE_NAME="mysql-shell"; [ -n "$7" ] && MYSQL_SHELL_PACKAGE_NAME=$7
 MYSQL_VERSION=""; [ -n "$8" ] && MYSQL_VERSION=$8
+SHELL_VERSION=""; [ -n "$9" ] && SHELL_VERSION=$9
+
 # 33060 is the default port for the mysqlx plugin, new to 5.7
 declare -A PORTS
 PORTS["5.7"]="3306 33060"
@@ -51,68 +53,66 @@ declare -A PRECREATE_DIRS
 PRECREATE_DIRS["5.7"]="/var/lib/mysql /var/lib/mysql-files /var/lib/mysql-keyring /var/run/mysqld"
 PRECREATE_DIRS["8.0"]="/var/lib/mysql /var/lib/mysql-files /var/lib/mysql-keyring /var/run/mysqld"
 
-for VERSION in "${!MYSQL_SERVER_VERSIONS[@]}"
-do
-  if [ -n "${MYSQL_VERSION}" ]; then
-    MYSQL_SERVER_PACKAGE=${MYSQL_SERVER_PACKAGE_NAME}-${MYSQL_VERSION}
-    MYSQL_SHELL_PACKAGE=${MYSQL_SHELL_PACKAGE_NAME}-${MYSQL_VERSION}
-  else
-    MYSQL_SERVER_PACKAGE=${MYSQL_SERVER_PACKAGE_NAME}
-    MYSQL_SHELL_PACKAGE=${MYSQL_SHELL_PACKAGE_NAME}
-  fi
-  # Dockerfiles
-  MYSQL_SERVER_REPOPATH=yum/mysql-$VERSION-community/docker/x86_64
-  DOCKERFILE_TEMPLATE=template/Dockerfile
-  if [ "${VERSION}" != "8.0" ]; then
-    DOCKERFILE_TEMPLATE=template/Dockerfile-pre8
-  fi
-  sed 's#%%MYSQL_SERVER_PACKAGE%%#'"${MYSQL_SERVER_PACKAGE}"'#g' $DOCKERFILE_TEMPLATE > tmpfile
-  sed -i 's#%%REPO%%#'"${REPO}"'#g' tmpfile
-  REPO_VERSION=${VERSION//\./}
-  sed -i 's#%%REPO_VERSION%%#'"${REPO_VERSION}"'#g' tmpfile
+declare -A DOCKERFILE_TEMPLATES
+DOCKERFILE_TEMPLATES["5.7"]="template/Dockerfile-pre8"
+DOCKERFILE_TEMPLATES["8.0"]="template/Dockerfile"
 
-  sed -i 's#%%CONFIG_PACKAGE_NAME%%#'"${CONFIG_PACKAGE_NAME}"'#g' tmpfile
-  sed -i 's#%%CONFIG_PACKAGE_NAME_MINIMAL%%#'"${CONFIG_PACKAGE_NAME_MINIMAL}"'#g' tmpfile
-  sed -i 's#%%REPO_NAME_SERVER%%#'"${REPO_NAME_SERVER}"'#g' tmpfile
-  sed -i 's#%%REPO_NAME_TOOLS%%#'"${REPO_NAME_TOOLS}"'#g' tmpfile
+declare -A SPEC_PORTS
+SPEC_PORTS["5.7"]="3306/tcp, 33060/tcp"
+SPEC_PORTS["8.0"]="3306/tcp, 33060-33061/tcp"
 
-  if [[ ! -z ${MYSQL_SHELL_VERSIONS[${VERSION}]} ]]; then
-    sed -i 's#%%MYSQL_SHELL_PACKAGE%%#'"${MYSQL_SHELL_PACKAGE}"'#g' tmpfile
-  else
-    sed -i 's#%%MYSQL_SHELL_PACKAGE%%#'""'#g' tmpfile
-  fi
+# Get the Major Version
+VERSION=$(echo $MYSQL_VERSION | cut -d'.' -f'1,2')
 
-  sed -i 's/%%PORTS%%/'"${PORTS[${VERSION}]}"'/g' tmpfile
-  mv tmpfile ${VERSION}/Dockerfile
+MYSQL_SERVER_PACKAGE=${MYSQL_SERVER_PACKAGE_NAME}-${MYSQL_VERSION}
+MYSQL_SHELL_PACKAGE=${MYSQL_SHELL_PACKAGE_NAME}-${SHELL_VERSION}
 
-  # Dockerfile_spec.rb
-  if [ ! -d "${VERSION}/inspec" ]; then
-    mkdir "${VERSION}/inspec"
-  fi
-  sed 's#%%MYSQL_VERSION%%#'"${MYSQL_VERSION}"'#g' template/control.rb > tmpFile
-  sed -i 's#%%MYSQL_SERVER_PACKAGE_NAME%%#'"${MYSQL_SERVER_PACKAGE_NAME}"'#g' tmpFile
-  sed -i 's#%%MYSQL_SHELL_PACKAGE_NAME%%#'"${MYSQL_SHELL_PACKAGE_NAME}"'#g' tmpFile
-  sed -i 's#%%MAJOR_VERSION%%#'"${VERSION}"'#g' tmpFile
-  if [ "${VERSION}" == "5.7" ]; then
-    sed -i 's#%%PORTS%%#'"3306/tcp, 33060/tcp"'#g' tmpFile
-  else
-    sed -i 's#%%PORTS%%#'"3306/tcp, 33060-33061/tcp"'#g' tmpFile
-  fi
-  mv tmpFile "${VERSION}/inspec/control.rb"
+# Dockerfiles
+MYSQL_SERVER_REPOPATH=yum/mysql-$VERSION-community/docker/x86_64
 
-  # Entrypoint
-  sed 's#%%PASSWORDSET%%#'"${PASSWORDSET[${VERSION}]}"'#g' template/docker-entrypoint.sh > tmpfile
-  sed -i 's#%%FULL_SERVER_VERSION%%#'"${FULL_SERVER_VERSIONS[${VERSION}]}"'#g' tmpfile
-  sed -i 's#%%VALIDATE_CONFIG%%#'"${VALIDATE_CONFIG[${VERSION}]}"'#g' tmpfile
-  mv tmpfile ${VERSION}/docker-entrypoint.sh
-  chmod +x ${VERSION}/docker-entrypoint.sh
+sed 's#%%MYSQL_SERVER_PACKAGE%%#'"${MYSQL_SERVER_PACKAGE}"'#g' ${DOCKERFILE_TEMPLATES[${VERSION}]} > tmpfile
+sed -i 's#%%REPO%%#'"${REPO}"'#g' tmpfile
 
-  # Healthcheck
-  cp template/healthcheck.sh ${VERSION}/
-  chmod +x ${VERSION}/healthcheck.sh
+REPO_VERSION=${VERSION//\./}
+sed -i 's#%%REPO_VERSION%%#'"${REPO_VERSION}"'#g' tmpfile
 
-  # Build-time preparation script
-  sed 's#%%PRECREATE_DIRS%%#'"${PRECREATE_DIRS[${VERSION}]}"'#g' template/prepare-image.sh > tmpfile
-  mv tmpfile ${VERSION}/prepare-image.sh
-  chmod +x ${VERSION}/prepare-image.sh
-done
+sed -i 's#%%CONFIG_PACKAGE_NAME%%#'"${CONFIG_PACKAGE_NAME}"'#g' tmpfile
+sed -i 's#%%CONFIG_PACKAGE_NAME_MINIMAL%%#'"${CONFIG_PACKAGE_NAME_MINIMAL}"'#g' tmpfile
+sed -i 's#%%REPO_NAME_SERVER%%#'"${REPO_NAME_SERVER}"'#g' tmpfile
+sed -i 's#%%REPO_NAME_TOOLS%%#'"${REPO_NAME_TOOLS}"'#g' tmpfile
+
+sed -i 's#%%MYSQL_SHELL_PACKAGE%%#'"${MYSQL_SHELL_PACKAGE}"'#g' tmpfile
+
+sed -i 's/%%PORTS%%/'"${PORTS[${VERSION}]}"'/g' tmpfile
+mv tmpfile ${VERSION}/Dockerfile
+
+# Dockerfile_spec.rb
+if [ ! -d "${VERSION}/inspec" ]; then
+  mkdir "${VERSION}/inspec"
+fi
+
+sed 's#%%MYSQL_SERVER_VERSION%%#'"${MYSQL_VERSION}"'#g' template/control.rb > tmpFile
+sed -i 's#%%MYSQL_SHELL_VERSION%%#'"${SHELL_VERSION}"'#g' tmpFile
+sed -i 's#%%MYSQL_SERVER_PACKAGE_NAME%%#'"${MYSQL_SERVER_PACKAGE_NAME}"'#g' tmpFile
+sed -i 's#%%MYSQL_SHELL_PACKAGE_NAME%%#'"${MYSQL_SHELL_PACKAGE_NAME}"'#g' tmpFile
+sed -i 's#%%MAJOR_VERSION%%#'"${VERSION}"'#g' tmpFile
+
+sed -i 's#%%PORTS%%#'"${SPEC_PORTS[${VERSION}]}"'#g' tmpFile
+mv tmpFile "${VERSION}/inspec/control.rb"
+
+# Entrypoint
+FULL_SERVER_VERSION="$MYSQL_VERSION-${IMAGE_VERSION}"
+sed 's#%%PASSWORDSET%%#'"${PASSWORDSET[${VERSION}]}"'#g' template/docker-entrypoint.sh > tmpfile
+sed -i 's#%%FULL_SERVER_VERSION%%#'"${FULL_SERVER_VERSION}"'#g' tmpfile
+sed -i 's#%%VALIDATE_CONFIG%%#'"${VALIDATE_CONFIG[${VERSION}]}"'#g' tmpfile
+mv tmpfile ${VERSION}/docker-entrypoint.sh
+chmod +x ${VERSION}/docker-entrypoint.sh
+
+# Healthcheck
+cp template/healthcheck.sh ${VERSION}/
+chmod +x ${VERSION}/healthcheck.sh
+
+# Build-time preparation script
+sed 's#%%PRECREATE_DIRS%%#'"${PRECREATE_DIRS[${VERSION}]}"'#g' template/prepare-image.sh > tmpfile
+mv tmpfile ${VERSION}/prepare-image.sh
+chmod +x ${VERSION}/prepare-image.sh
