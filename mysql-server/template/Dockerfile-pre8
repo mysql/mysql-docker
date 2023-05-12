@@ -24,6 +24,7 @@ RUN rpm -U %%REPO%%/mysql-community-minimal-release-el7.rpm \
 # Install server and shell 8.0
 RUN yum install -y $MYSQL_SHELL_PACKAGE --enablerepo=%%REPO_NAME_TOOLS%% \
   && yum install -y $MYSQL_SERVER_PACKAGE --enablerepo=%%REPO_NAME_SERVER%% \
+  && yum remove %%MYSQL_CONFIG_PKG_MINIMAL%% %%MYSQL_CONFIG_PKG%%
   && yum clean all \
   && mkdir /docker-entrypoint-initdb.d
 
