@@ -32,8 +32,8 @@ MYSQL_SERVER_PACKAGE_NAME="mysql-community-server-minimal"; [ -n "$6" ] && MYSQL
 MYSQL_SHELL_PACKAGE_NAME="mysql-shell"; [ -n "$7" ] && MYSQL_SHELL_PACKAGE_NAME=$7
 MYSQL_VERSION=""; [ -n "$8" ] && MYSQL_VERSION=$8
 SHELL_VERSION=""; [ -n "$9" ] && SHELL_VERSION=$9
-MYSQL_CONFIG_PKG_MINIMAL="mysql-community-minimal-release"; [ -n "$10" ] && MYSQL_CONFIG_PKG_MINIMAL=$10
-MYSQL_CONFIG_PKG="mysql80-community-release"; [ -n "$11" ] && MYSQL_CONFIG_PKG=$11
+MYSQL_CONFIG_PKG_MINIMAL="mysql-community-minimal-release"; [ -n "${10}" ] && MYSQL_CONFIG_PKG_MINIMAL=${10}
+MYSQL_CONFIG_PKG="mysql80-community-release"; [ -n "${11}" ] && MYSQL_CONFIG_PKG=${11}
 
 # 33060 is the default port for the mysqlx plugin, new to 5.7
 declare -A PORTS
