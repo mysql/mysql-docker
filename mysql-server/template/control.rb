@@ -3,8 +3,8 @@ control 'container' do
   describe podman.containers do
     its('status') { should cmp /Up/ }
     its('commands') { should cmp /mysqld/ }
-    its('images') { should cmp /mysql-server:%%MAJOR_VERSION%%/ }
-    its('names') { should include "mysql-server-%%MAJOR_VERSION%%" }
+    its('images') { should cmp /%%CONT_NAME%%:%%MAJOR_VERSION%%/ }
+    its('names') { should include "%%CONT_NAME%%-%%MAJOR_VERSION%%" }
   end
 end
 control 'packages' do

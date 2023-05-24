@@ -35,6 +35,12 @@ SHELL_VERSION=""; [ -n "$9" ] && SHELL_VERSION=$9
 MYSQL_CONFIG_PKG_MINIMAL="mysql-community-minimal-release"; [ -n "${10}" ] && MYSQL_CONFIG_PKG_MINIMAL=${10}
 MYSQL_CONFIG_PKG="mysql80-community-release"; [ -n "${11}" ] && MYSQL_CONFIG_PKG=${11}
 
+if [[ ${MYSQL_CONFIG_PKG_MINIMAL} =~ (community) ]]; then
+   CONT_NAME="mysql-server"
+else
+   CONT_NAME="mysql-enterprise-server"
+fi
+
 # 33060 is the default port for the mysqlx plugin, new to 5.7
 declare -A PORTS
 PORTS["5.7"]="3306 33060"
@@ -101,7 +107,7 @@ sed -i 's#%%MYSQL_SHELL_VERSION%%#'"${SHELL_VERSION}"'#g' tmpFile
 sed -i 's#%%MYSQL_SERVER_PACKAGE_NAME%%#'"${MYSQL_SERVER_PACKAGE_NAME}"'#g' tmpFile
 sed -i 's#%%MYSQL_SHELL_PACKAGE_NAME%%#'"${MYSQL_SHELL_PACKAGE_NAME}"'#g' tmpFile
 sed -i 's#%%MAJOR_VERSION%%#'"${VERSION}"'#g' tmpFile
-
+sed -i 's#%%CONT_NAME%%#'"${CONT_NAME}"'#g' tmpFile
 sed -i 's#%%PORTS%%#'"${SPEC_PORTS[${VERSION}]}"'#g' tmpFile
 mv tmpFile "${VERSION}/inspec/control.rb"
 

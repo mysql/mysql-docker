@@ -16,7 +16,6 @@
 
 # This script will simply use sed to replace placeholder variables in the
 # files in template/ with version-specific variants.
-
 set -e
 source ./VERSION
 
@@ -31,8 +30,16 @@ if grep -q Microsoft /proc/version; then
 fi
 
 ARCH=amd64; [ -n "$1" ] && ARCH=$1
-MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$2" ] && MAJOR_VERSIONS=("${@:2}")
+BUILD_TYPE=community; [ -n "$2" ] && BUILD_TYPE=$2
+MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=("${@:3}")
 
+if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
+   IMG_LOC="store/oracle/mysql-enterprise-server"
+   CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"
+else
+   IMG_LOC="mysql/mysql-server"
+   CONT_NAME="mysql-server-$MAJOR_VERSION"
+fi
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
     ARCH_SUFFIX=""
@@ -41,14 +48,14 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
         ARCH_SUFFIX="-$ARCH"
       fi
     done
-    podman run -d --rm --name "mysql-server-$MAJOR_VERSION" mysql/mysql-server:"$MAJOR_VERSION$ARCH_SUFFIX"
+    podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
     export DOCKER_HOST=unix:///tmp/podman.sock
 
     podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"
     inspec exec --no-color "$MAJOR_VERSION/inspec/control.rb" --controls container
-    inspec exec --no-color "$MAJOR_VERSION/inspec/control.rb" -t "docker://mysql-server-$MAJOR_VERSION" --controls packages
-    podman stop -i "mysql-server-$MAJOR_VERSION"
-    podman rm -i -f "mysql-server-$MAJOR_VERSION"
+    inspec exec --no-color "$MAJOR_VERSION/inspec/control.rb" -t "docker://$CONT_NAME" --controls packages
+    podman stop -i "$CONT_NAME"
+    podman rm -i -f "$CONT_NAME"
     kill -TERM ${DOCKER_SOCK_PID}
     rm -f /tmp/podman.sock
 done
