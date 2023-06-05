@@ -22,7 +22,7 @@ WEEKLY='' [ -n "$3" ] && WEEKLY=$3
 
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
-  for MULTIARCH_VERSION in ${MULTIARCH_VERSIONS}; do
+  for MULTIARCH_VERSION in "${MULTIARCH_VERSIONS[@]}"; do
     if [ "$WEEKLY" == "1" ]; then
       SERVER_VERSION=${WEEKLY_SERVER_VERSIONS["${MAJOR_VERSION}"]}
     else
@@ -30,6 +30,9 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
     fi
     FULL_SERVER_VERSION="${SERVER_VERSION}-${IMAGE_VERSION}"
     if [[ "$MULTIARCH_VERSION" == "$MAJOR_VERSION" ]]; then
+      if [[ "$MAJOR_VERSION" == "innovation" ]]; then
+        MAJOR_VERSION=${LATEST_INNOVATION}
+      fi
       TAGS="${MAJOR_VERSION}${SUFFIX} ${SERVER_VERSION}${SUFFIX} ${FULL_SERVER_VERSION}${SUFFIX}"
       if [[ "$MAJOR_VERSION" == "$LATEST" ]]; then
         TAGS="$TAGS latest${SUFFIX}"

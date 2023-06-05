@@ -26,7 +26,7 @@ fi
 
 ARCH=amd64; [ -n "$1" ] && ARCH=$1
 BUILD_TYPE=community; [ -n "$2" ] && BUILD_TYPE=$2
-MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$2" ] && MAJOR_VERSIONS=("${@:3}")
+MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=("${@:3}")
 
 if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
    IMG_LOC=store/oracle/mysql-enterprise-server
@@ -35,9 +35,14 @@ else
 fi
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
-  for MULTIARCH_VERSION in ${MULTIARCH_VERSIONS}; do
+  for MULTIARCH_VERSION in "${MULTIARCH_VERSIONS[@]}"; do
     if [[ "$MULTIARCH_VERSION" == "$MAJOR_VERSION" ]]; then
-        docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$MAJOR_VERSION"-$ARCH "$MAJOR_VERSION"
+        if [[ "$MAJOR_VERSION" == "innovation" ]]; then
+            VERSION=${LATEST_INNOVATION}
+            docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$VERSION"-$ARCH "$MAJOR_VERSION"
+        else
+            docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$MAJOR_VERSION"-$ARCH "$MAJOR_VERSION"
+        fi
     fi
   done
   for SINGLEARCH_VERSION in $SINGLEARCH_VERSIONS; do

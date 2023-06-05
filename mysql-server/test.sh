@@ -35,20 +35,26 @@ MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=(
 
 if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
    IMG_LOC="store/oracle/mysql-enterprise-server"
-   CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"
+   CONT_NAME="mysql-enterprise-server"
 else
    IMG_LOC="mysql/mysql-server"
-   CONT_NAME="mysql-server-$MAJOR_VERSION"
+   CONT_NAME="mysql-server"
 fi
-
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
     ARCH_SUFFIX=""
-    for MULTIARCH_VERSION in ${MULTIARCH_VERSIONS}; do
+    for MULTIARCH_VERSION in "${MULTIARCH_VERSIONS[@]}"; do
       if [[ "$MULTIARCH_VERSION" == "$MAJOR_VERSION" ]]; then
         ARCH_SUFFIX="-$ARCH"
       fi
     done
-    podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
+    if [[ "$MAJOR_VERSION" == "innovation" ]]; then
+        VERSION=${LATEST_INNOVATION}
+        CONT_NAME=$CONT_NAME-$VERSION
+        podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$VERSION$ARCH_SUFFIX"
+    else
+        CONT_NAME=$CONT_NAME-$MAJOR_VERSION
+        podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
+    fi
     export DOCKER_HOST=unix:///tmp/podman.sock
 
     podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"

@@ -25,20 +25,18 @@ if grep -q Microsoft /proc/version; then
 fi
 
 REPO=mysql/mysql-server; [ -n "$1" ] && REPO=$1
+MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$2" ] && MAJOR_VERSIONS=("${@:2}")
 
 WEEKLY=0
 if [[ "$REPO" =~ (weekly) ]]; then
   WEEKLY=1
 fi
 
-for MAJOR_VERSION in ${MULTIARCH_VERSIONS}; do
-  MANIFEST_VERSIONS=$(./tag.sh "" "$MAJOR_VERSION" "$WEEKLY")
-  for MANIFEST_VERSION in $MANIFEST_VERSIONS; do
-    docker pull "$REPO:$MANIFEST_VERSION-arm64" "$REPO:$MANIFEST_VERSION-amd64"
-    docker manifest create "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-arm64" "$REPO:$MANIFEST_VERSION-amd64"
-    docker manifest add "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-arm64" --os linux --arch arm64
-    docker manifest add "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-amd64" --os linux --arch amd64
-    docker manifest push "$REPO:$MANIFEST_VERSION" "docker://$REPO:$MANIFEST_VERSION"
-
-  done
+MANIFEST_VERSIONS=$(./tag.sh "" "$MAJOR_VERSION" "$WEEKLY")
+for MANIFEST_VERSION in $MANIFEST_VERSIONS; do
+  docker pull "$REPO:$MANIFEST_VERSION-arm64" "$REPO:$MANIFEST_VERSION-amd64"
+  docker manifest create "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-arm64" "$REPO:$MANIFEST_VERSION-amd64"
+  docker manifest add "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-arm64" --os linux --arch arm64
+  docker manifest add "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-amd64" --os linux --arch amd64
+  docker manifest push "$REPO:$MANIFEST_VERSION" "docker://$REPO:$MANIFEST_VERSION"
 done
