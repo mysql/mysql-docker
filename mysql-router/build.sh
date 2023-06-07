@@ -17,7 +17,8 @@ set -e
 source ./VERSION
 
 ARCH=amd64; [ -n "$1" ] && ARCH=$1
+MAJOR_VERSIONS=("${!MYSQL_ROUTER_VERSIONS[@]}"); [ -n "$2" ] && MAJOR_VERSIONS=("${@:2}")
 
-for MAJOR_VERSION in "${!MYSQL_ROUTER_VERSIONS[@]}"; do
+for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
   docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$http_proxy --build-arg no_proxy=$no_proxy -t mysql/mysql-router:$MAJOR_VERSION-$ARCH $MAJOR_VERSION
 done

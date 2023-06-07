@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 set -e
 
 source ./VERSION
@@ -13,8 +14,18 @@ REPO_NAME_SERVER=mysql80-community; [ -n "$7" ] && REPO_NAME_SERVER=$7
 REPO_NAME_TOOLS=mysql-tools-community; [ -n "$8" ] && REPO_NAME_TOOLS=$8
 
 MAJOR_VERSION=$(echo $MYSQL_CLIENT_VERSION | cut -d'.' -f'1,2')
+
 MYSQL_CLIENT_PACKAGE=$MYSQL_CLIENT_PACKAGE_NAME-$MYSQL_CLIENT_VERSION
 MYSQL_ROUTER_PACKAGE=$MYSQL_ROUTER_PACKAGE_NAME-$MYSQL_ROUTER_VERSION
+
+echo "In the place"
+echo `ls`
+if [ ! -d "${MAJOR_VERSION}" ]; then
+  mkdir -p "${MAJOR_VERSION}/inspec"
+fi
+echo `ls -lrt`
+echo 'inside 8.1'
+echo `ls -lrt 8.1`
 
 sed 's#%%MYSQL_CLIENT_PACKAGE%%#'"${MYSQL_CLIENT_PACKAGE}"'#g' template/Dockerfile > tmpFile
 sed -i 's#%%MYSQL_ROUTER_PACKAGE%%#'"${MYSQL_ROUTER_PACKAGE}"'#g' tmpFile
@@ -22,7 +33,7 @@ sed -i 's#%%CONFIG_PACKAGE_NAME%%#'"${CONFIG_PACKAGE_NAME}"'#g' tmpFile
 sed -i 's#%%REPO%%#'"${REPO}"'#g' tmpFile
 sed -i 's#%%REPO_NAME_SERVER%%#'"${REPO_NAME_SERVER}"'#g' tmpFile
 sed -i 's#%%REPO_NAME_TOOLS%%#'"${REPO_NAME_TOOLS}"'#g' tmpFile
-mv tmpFile $MAJOR_VERSION/Dockerfile
+mv tmpFile ${MAJOR_VERSION}/Dockerfile
 
 # update test template
 sed -e 's#%%MYSQL_CLIENT_PACKAGE_NAME%%#'"${MYSQL_CLIENT_PACKAGE_NAME}"'#g' template/control.rb > tmpFile
@@ -30,13 +41,10 @@ sed -i -e 's#%%MYSQL_CLIENT_VERSION%%#'"${MYSQL_CLIENT_VERSION}"'#g' tmpFile
 sed -i -e 's#%%MYSQL_ROUTER_PACKAGE_NAME%%#'"${MYSQL_ROUTER_PACKAGE_NAME}"'#g' tmpFile
 sed -i -e 's#%%MYSQL_ROUTER_VERSION%%#'"${MYSQL_ROUTER_VERSION}"'#g' tmpFile
 sed -i -e 's#%%MAJOR_VERSION%%#'"${MAJOR_VERSION}"'#g' tmpFile
-if [ ! -d "${MAJOR_VERSION}/inspec" ]; then
-  mkdir "${MAJOR_VERSION}/inspec"
-fi
 mv tmpFile "${MAJOR_VERSION}/inspec/control.rb"
 
 # copy entrypoint script
-cp template/run.sh $MAJOR_VERSION/run.sh
-chmod +x $MAJOR_VERSION/run.sh
+cp template/run.sh ${MAJOR_VERSION}/run.sh
+chmod +x ${MAJOR_VERSION}/run.sh
 
-cp README.md $MAJOR_VERSION/
+cp README.md ${MAJOR_VERSION}/

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2018, 2023 Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,12 +37,7 @@ fi
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
   for MULTIARCH_VERSION in "${MULTIARCH_VERSIONS[@]}"; do
     if [[ "$MULTIARCH_VERSION" == "$MAJOR_VERSION" ]]; then
-        if [[ "$MAJOR_VERSION" == "innovation" ]]; then
-            VERSION=${LATEST_INNOVATION}
-            docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$VERSION"-$ARCH "$MAJOR_VERSION"
-        else
-            docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$MAJOR_VERSION"-$ARCH "$MAJOR_VERSION"
-        fi
+        docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$MAJOR_VERSION"-$ARCH "$MAJOR_VERSION"
     fi
   done
   for SINGLEARCH_VERSION in $SINGLEARCH_VERSIONS; do

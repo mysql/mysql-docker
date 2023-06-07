@@ -35,10 +35,10 @@ MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=(
 
 if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
    IMG_LOC="store/oracle/mysql-enterprise-server"
-   CONT_NAME="mysql-enterprise-server"
+   CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"
 else
    IMG_LOC="mysql/mysql-server"
-   CONT_NAME="mysql-server"
+   CONT_NAME="mysql-server-$MAJOR_VERSION"
 fi
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
     ARCH_SUFFIX=""
@@ -47,16 +47,8 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
         ARCH_SUFFIX="-$ARCH"
       fi
     done
-    if [[ "$MAJOR_VERSION" == "innovation" ]]; then
-        VERSION=${LATEST_INNOVATION}
-        CONT_NAME=$CONT_NAME-$VERSION
-        podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$VERSION$ARCH_SUFFIX"
-    else
-        CONT_NAME=$CONT_NAME-$MAJOR_VERSION
-        podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
-    fi
+    podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
     export DOCKER_HOST=unix:///tmp/podman.sock
-
     podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"
     inspec exec --no-color "$MAJOR_VERSION/inspec/control.rb" --controls container
     inspec exec --no-color "$MAJOR_VERSION/inspec/control.rb" -t "docker://$CONT_NAME" --controls packages
