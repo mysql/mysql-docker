@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2020, 2023, Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,11 @@ source VERSION
 MAJOR_VERSIONS=("${!MYSQL_CLUSTER_VERSIONS[@]}"); [ -n "$1" ] && MAJOR_VERSIONS=("${@:1}")
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
+  TAGS="$MAJOR_VERSION ${MYSQL_CLUSTER_VERSIONS[$MAJOR_VERSION]} ${FULL_SERVER_VERSIONS[$MAJOR_VERSION]}"
+
   if [ "$MAJOR_VERSION" = "$LATEST" ]; then
-    echo "$MAJOR_VERSION ${MYSQL_CLUSTER_VERSIONS["$MAJOR_VERSION"]} latest"
-  else
-    echo "$MAJOR_VERSION ${MYSQL_CLUSTER_VERSIONS["$MAJOR_VERSION"]}"
+    TAGS="latest $TAGS"
   fi
+
+  echo $TAGS
 done

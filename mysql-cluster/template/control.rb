@@ -15,6 +15,6 @@ control 'packages' do
   end
   describe package('%%MYSQL_SHELL_PACKAGE_NAME%%') do
     it { should be_installed }
-    its ('version') { should match '%%MYSQL_VERSION%%.*' }
+    its ('version') { should match '%%MYSQL_SHELL_VERSION%%.*' }
   end
 end
