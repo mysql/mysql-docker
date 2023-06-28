@@ -202,6 +202,8 @@ EOF
 		echo
 		echo '[Entrypoint] MySQL init process done. Ready for start up.'
 		echo
+	else
+ 		echo '[Entrypoint] MySQL already initialized in: $DATADIR/mysql' 
 	fi
 
 	# Used by healthcheck to make sure it doesn't mistakenly report container
