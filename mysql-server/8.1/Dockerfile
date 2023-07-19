@@ -1,4 +1,4 @@
-# Copyright (c) 2017, 2022, Oracle and/or its affiliates.
+# Copyright (c) 2017, 2023, Oracle and/or its affiliates.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,24 +12,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-FROM container-registry.oracle.com/os/oraclelinux:7-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-5.7.43
-ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.34
+FROM container-registry.oracle.com/os/oraclelinux:8-slim
+
+ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-8.1.0
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.1.0
 
 # Setup repositories for minimal packages (all versions)
-RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-community-minimal-release-el7.rpm \
-  && rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql80-community-release-el7.rpm
+RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-community-minimal-release-el8.rpm \
+  && rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql80-community-release-el8.rpm
 
 # Install server and shell 8.0
-RUN yum install -y $MYSQL_SHELL_PACKAGE --enablerepo=mysql-tools-community \
-  && yum install -y $MYSQL_SERVER_PACKAGE --enablerepo=mysql57-community-minimal \
-  && yum remove -y mysql-community-minimal-release mysql80-community-release \
-  && yum clean all \
+RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
+  && microdnf install -y --enablerepo=mysql-tools-innovation-community $MYSQL_SHELL_PACKAGE \
+  && microdnf install -y --disablerepo=ol8_appstream \
+   --enablerepo=mysql-innovation-community-minimal $MYSQL_SERVER_PACKAGE \
+  && microdnf remove mysql-community-minimal-release mysql80-community-release \
+  && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d
-
-# Ensure mysqld logs go to stderr
-RUN sed -i 's/^log-error=/#&/' /etc/my.cnf
 
 COPY prepare-image.sh /
 RUN /prepare-image.sh && rm -f /prepare-image.sh
@@ -40,6 +40,6 @@ COPY docker-entrypoint.sh /entrypoint.sh
 COPY healthcheck.sh /healthcheck.sh
 ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
-EXPOSE 3306 33060
+EXPOSE 3306 33060 33061
 CMD ["mysqld"]
 

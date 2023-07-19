@@ -15,18 +15,19 @@
 
 FROM container-registry.oracle.com/os/oraclelinux:8-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal
-ARG MYSQL_SHELL_PACKAGE=mysql-shell
+ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-8.0.34
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.34
 
 # Setup repositories for minimal packages (all versions)
-RUN rpm -U https://repo.mysql.com/mysql-community-minimal-release-el8.rpm \
-  && rpm -U https://repo.mysql.com/mysql80-community-release-el8.rpm
+RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-community-minimal-release-el8.rpm \
+  && rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql80-community-release-el8.rpm
 
 # Install server and shell 8.0
 RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
   && microdnf install -y --enablerepo=mysql-tools-community $MYSQL_SHELL_PACKAGE \
   && microdnf install -y --disablerepo=ol8_appstream \
    --enablerepo=mysql80-community-minimal $MYSQL_SERVER_PACKAGE \
+  && microdnf remove mysql-community-minimal-release mysql80-community-release \
   && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d
 
