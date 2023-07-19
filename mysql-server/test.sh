@@ -33,14 +33,14 @@ ARCH=amd64; [ -n "$1" ] && ARCH=$1
 BUILD_TYPE=community; [ -n "$2" ] && BUILD_TYPE=$2
 MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=("${@:3}")
 
-if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
-   IMG_LOC="store/oracle/mysql-enterprise-server"
-   CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"
-else
-   IMG_LOC="mysql/mysql-server"
-   CONT_NAME="mysql-server-$MAJOR_VERSION"
-fi
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
+    if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
+      IMG_LOC="store/oracle/mysql-enterprise-server"
+      CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"
+    else
+      IMG_LOC="mysql/mysql-server"
+      CONT_NAME="mysql-server-$MAJOR_VERSION"
+    fi
     ARCH_SUFFIX=""
     for MULTIARCH_VERSION in "${MULTIARCH_VERSIONS[@]}"; do
       if [[ "$MULTIARCH_VERSION" == "$MAJOR_VERSION" ]]; then
