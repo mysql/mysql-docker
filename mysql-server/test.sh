@@ -34,6 +34,12 @@ BUILD_TYPE=community; [ -n "$2" ] && BUILD_TYPE=$2
 MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=("${@:3}")
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
+    if [[ "$BUILD_TYPE" =~ (weekly) ]]; then
+        SERVER_VERSION=${WEEKLY_SERVER_VERSIONS["${MAJOR_VERSION}"]}
+    else
+        SERVER_VERSION=${MYSQL_SERVER_VERSIONS["${MAJOR_VERSION}"]}
+    fi
+    MAJOR_VERSION=${SERVER_VERSION%.*}
     if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
       IMG_LOC="store/oracle/mysql-enterprise-server"
       CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"
@@ -42,11 +48,9 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
       CONT_NAME="mysql-server-$MAJOR_VERSION"
     fi
     ARCH_SUFFIX=""
-    for MULTIARCH_VERSION in "${MULTIARCH_VERSIONS[@]}"; do
-      if [[ "$MULTIARCH_VERSION" == "$MAJOR_VERSION" ]]; then
+    if [ "$SINGLEARCH_VERSION" != "$MAJOR_VERSION" ]; then
         ARCH_SUFFIX="-$ARCH"
-      fi
-    done
+    fi
     podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
     export DOCKER_HOST=unix:///tmp/podman.sock
     podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"
