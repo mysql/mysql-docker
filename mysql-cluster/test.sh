@@ -23,6 +23,8 @@ source VERSION
 MAJOR_VERSIONS=("${!MYSQL_CLUSTER_VERSIONS[@]}"); [ -n "$1" ] && MAJOR_VERSIONS=("${@:1}")
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
+    CLUSTER_VERSION=${MYSQL_CLUSTER_VERSIONS[$MAJOR_VERSION]}
+    MAJOR_VERSION=${CLUSTER_VERSION%.*}
     podman run -d --rm  --name "mysql-cluster-$MAJOR_VERSION" "mysql/mysql-cluster:$MAJOR_VERSION"
     export DOCKER_HOST=unix:///tmp/podman.sock
     podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"

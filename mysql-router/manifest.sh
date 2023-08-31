@@ -33,7 +33,7 @@ if [[ "$REPO" =~ (weekly) ]]; then
   WEEKLY=1
 fi
 
-MANIFEST_VERSIONS=$(./tag.sh "" "$MAJOR_VERSIONS" "$WEEKLY")
+MANIFEST_VERSIONS=$(./tag.sh "" "$WEEKLY" "${MAJOR_VERSIONS[@]}")
 for MANIFEST_VERSION in $MANIFEST_VERSIONS; do
   docker pull "$REPO:$MANIFEST_VERSION-arm64" "$REPO:$MANIFEST_VERSION-amd64"
   docker manifest create "$REPO:$MANIFEST_VERSION" "$REPO:$MANIFEST_VERSION-arm64" "$REPO:$MANIFEST_VERSION-amd64"

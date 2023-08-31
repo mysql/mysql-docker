@@ -21,9 +21,16 @@ set -e
 source ./VERSION
 
 ARCH=amd64; [ -n "$1" ] && ARCH=$1
-MAJOR_VERSIONS=("${!MYSQL_SERVER_VERSIONS[@]}"); [ -n "$2" ] && MAJOR_VERSIONS=("${@:2}")
+WEEKLY=''; [ -n "$2" ] && WEEKLY=$2
+MAJOR_VERSIONS=("${!MYSQL_ROUTER_VERSIONS[@]}"); [ -n "$3" ] && MAJOR_VERSIONS=("${@:3}")
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
+   if [ "$WEEKLY" == "1" ]; then
+     ROUTER_VERSION=${WEEKLY_ROUTER_VERSIONS["${MAJOR_VERSION}"]}
+   else
+     ROUTER_VERSION=${MYSQL_ROUTER_VERSIONS["${MAJOR_VERSION}"]}
+   fi
+   MAJOR_VERSION=${ROUTER_VERSION%.*}
    podman run -d --rm -e MYSQL_HOST=x -e MYSQL_PORT=9 -e MYSQL_USER=x -e MYSQL_PASSWORD=x -e MYSQL_INNODB_CLUSTER_MEMBERS=1 --name "mysql-router-$MAJOR_VERSION" mysql/mysql-router:$MAJOR_VERSION-$ARCH sleep 5000
    export DOCKER_HOST=unix:///tmp/podman.sock
    podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"

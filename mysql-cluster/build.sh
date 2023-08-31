@@ -19,5 +19,7 @@ source ./VERSION
 MAJOR_VERSIONS=("${!MYSQL_CLUSTER_VERSIONS[@]}"); [ -n "$1" ] && MAJOR_VERSIONS=("${@:1}")
 
 for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
+  CLUSTER_VERSION=${MYSQL_CLUSTER_VERSIONS[$MAJOR_VERSION]}
+  MAJOR_VERSION=${CLUSTER_VERSION%.*}
   docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$http_proxy --build-arg no_proxy=$no_proxy -t mysql/mysql-cluster:$MAJOR_VERSION $MAJOR_VERSION
 done

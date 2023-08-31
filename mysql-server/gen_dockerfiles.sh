@@ -34,9 +34,9 @@ MYSQL_CONFIG_PKG_MINIMAL="mysql-community-minimal-release"; [ -n "${10}" ] && MY
 MYSQL_CONFIG_PKG="mysql80-community-release"; [ -n "${11}" ] && MYSQL_CONFIG_PKG=${11}
 
 # Get the Major Version
-MAJOR_VERSION=$(echo $MYSQL_VERSION | cut -d'.' -f'1,2')
-if [[ $(awk -v ver="$MAJOR_VERSION" 'BEGIN{ if (ver >= 8.1) print "true" }') == "true" ]]; then
-        REPO_PATH="innovation"
+MAJOR_VERSION=${MYSQL_VERSION%.*}
+if [ $MAJOR_VERSION == $LATEST_INNOVATION ]; then
+    REPO_PATH="innovation"
 fi
 
 if [[ ${MYSQL_CONFIG_PKG_MINIMAL} =~ (community) ]]; then
