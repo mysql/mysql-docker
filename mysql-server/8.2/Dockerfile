@@ -24,9 +24,9 @@ RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-communit
 
 # Install server and shell 8.0
 RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
-  && microdnf install -y --enablerepo=mysql-tools-community $MYSQL_SHELL_PACKAGE \
+  && microdnf install -y --enablerepo=mysql-tools-innovation-community $MYSQL_SHELL_PACKAGE \
   && microdnf install -y --disablerepo=ol8_appstream \
-   --enablerepo=mysqllatest-community-minimal $MYSQL_SERVER_PACKAGE \
+   --enablerepo=mysql-innovation-community-minimal $MYSQL_SERVER_PACKAGE \
   && microdnf remove mysql-community-minimal-release mysql80-community-release \
   && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d

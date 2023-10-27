@@ -14,8 +14,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 FROM container-registry.oracle.com/os/oraclelinux:7-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-5.7.43
-ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.34
+ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-5.7.44
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.35
 
 # Setup repositories for minimal packages (all versions)
 RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-community-minimal-release-el7.rpm \
