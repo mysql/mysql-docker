@@ -18,7 +18,7 @@ ARG MYSQL_CLIENT_PACKAGE=mysql-community-client-8.0.35
 ARG MYSQL_ROUTER_PACKAGE=mysql-router-community-8.0.35
 ARG CONFIG_PACKAGE_NAME=mysql80-community-release-el8.rpm
 ARG REPO_NAME_SERVER=mysql80-community
-ARG REPO_NAME_TOOLS=mysql-tools-innovation-community
+ARG REPO_NAME_TOOLS=mysql-tools-community
 
 RUN /usr/sbin/groupadd -g 999 -r mysqlrouter >/dev/null \
   && /usr/sbin/useradd -M -N -u 999 -g mysqlrouter -r -d /var/lib/mysqlrouter -s /bin/false \
@@ -27,7 +27,7 @@ RUN /usr/sbin/groupadd -g 999 -r mysqlrouter >/dev/null \
   && microdnf install -y --disablerepo=\* \
      --enablerepo=mysql80-community $MYSQL_CLIENT_PACKAGE \
   && microdnf install -y --disablerepo=\* \
-     --enablerepo=mysql-tools-innovation-community $MYSQL_ROUTER_PACKAGE \
+     --enablerepo=mysql-tools-community $MYSQL_ROUTER_PACKAGE \
   && microdnf clean all
 
 COPY run.sh /run.sh
