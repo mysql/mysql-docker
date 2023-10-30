@@ -1,4 +1,4 @@
-# Copyright (c) 2017, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2017, 2023, Oracle and/or its affiliates.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,19 +13,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-FROM container-registry.oracle.com/os/oraclelinux:7-slim
+FROM container-registry.oracle.com/os/oraclelinux:8-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-7.6.28
-ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.35
+ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-8.2.0
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.2.0
 
 # Setup repositories for minimal packages (all versions)
-RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-cluster-community-minimal-release-el7.rpm \
-  && rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql80-community-release-el7.rpm
+RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-cluster-community-minimal-release-el8.rpm \
+  && rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql80-community-release-el8.rpm
 
 # Install server and shell 8.0
-RUN yum install -y $MYSQL_SHELL_PACKAGE \
-  && yum install -y $MYSQL_SERVER_PACKAGE --enablerepo=mysql-cluster76-community-minimal\
-  && yum clean all \
+RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
+  && microdnf install -y --enablerepo=mysql-tools-innovation-community $MYSQL_SHELL_PACKAGE \
+  && microdnf install -y --disablerepo=ol8_appstream \
+   --enablerepo=mysql-cluster-innovation-community-minimal $MYSQL_SERVER_PACKAGE \
+  && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d
 
 COPY prepare-image.sh /
@@ -40,6 +42,6 @@ COPY cnf/mysql-cluster.cnf /etc/
 
 ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
-EXPOSE 3306 33060 2202 1186
+EXPOSE 3306 33060-33061 2202 1186
 CMD ["mysqld"]
 

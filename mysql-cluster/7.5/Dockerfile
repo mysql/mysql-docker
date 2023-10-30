@@ -15,8 +15,8 @@
 
 FROM container-registry.oracle.com/os/oraclelinux:7-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-7.5.31
-ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.34
+ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-7.5.32
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.35
 
 # Setup repositories for minimal packages (all versions)
 RUN rpm -U http://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-cluster-community-minimal-release-el7.rpm \
