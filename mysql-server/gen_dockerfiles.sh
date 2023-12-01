@@ -61,17 +61,11 @@ PASSWORDSET="ALTER USER 'root'@'localhost' IDENTIFIED BY '\${MYSQL_ROOT_PASSWORD
 
 declare -A SPEC_PORTS
 
-if [[ $MAJOR_VERSION == "5.7" ]]; then
-   PORTS="3306 33060"
-   VALIDATE_CONFIG="output=\$(\"\$@\" --verbose --help 2>\&1 > /dev/null) || result=\$?"
-   DOCKERFILE_TEMPLATES="template/Dockerfile-pre8"
-   SPEC_PORTS="3306/tcp, 33060/tcp"
-else
-   PORTS="3306 33060 33061"
-   VALIDATE_CONFIG="output=\$(\"\$@\" --validate-config) || result=\$?"
-   DOCKERFILE_TEMPLATES="template/Dockerfile"
-   SPEC_PORTS="3306/tcp, 33060-33061/tcp"
-fi
+
+PORTS="3306 33060 33061"
+VALIDATE_CONFIG="output=\$(\"\$@\" --validate-config) || result=\$?"
+DOCKERFILE_TEMPLATES="template/Dockerfile"
+SPEC_PORTS="3306/tcp, 33060-33061/tcp"
 
 if [ ! -d "${MAJOR_VERSION}" ]; then
   mkdir -p "${MAJOR_VERSION}/inspec"

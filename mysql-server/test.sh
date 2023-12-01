@@ -47,10 +47,8 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
       IMG_LOC="mysql/mysql-server"
       CONT_NAME="mysql-server-$MAJOR_VERSION"
     fi
-    ARCH_SUFFIX=""
-    if [ "$SINGLEARCH_VERSION" != "$MAJOR_VERSION" ]; then
-        ARCH_SUFFIX="-$ARCH"
-    fi
+
+    ARCH_SUFFIX="-$ARCH"
     podman run -d --rm --name $CONT_NAME "$IMG_LOC":"$MAJOR_VERSION$ARCH_SUFFIX"
     export DOCKER_HOST=unix:///tmp/podman.sock
     podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"
