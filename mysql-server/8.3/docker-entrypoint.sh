@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 set -e
 
-echo "[Entrypoint] MySQL Docker Image 8.0.36-1.2.15-server"
+echo "[Entrypoint] MySQL Docker Image 8.3.0-1.2.15-server"
 # Fetch value from server config
 # We use mysqld --verbose --help instead of my_print_defaults because the
 # latter only show values present in config files, and not server defaults
@@ -220,7 +220,7 @@ EOF
 		echo "[Entrypoint] MYSQL_INITIALIZE_ONLY is set, exiting without starting MySQL..."
 		exit 0
 	else
-		echo "[Entrypoint] Starting MySQL 8.0.36-1.2.15-server"
+		echo "[Entrypoint] Starting MySQL 8.3.0-1.2.15-server"
 	fi
 	# 4th value of /proc/$pid/stat is the ppid, same as getppid()
 	export MYSQLD_PARENT_PID=$(cat /proc/$$/stat|cut -d\  -f4)
