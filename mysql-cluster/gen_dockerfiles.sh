@@ -24,8 +24,8 @@ source ./VERSION
 REPO=https://repo.mysql.com; [ -n "$1" ] && REPO=$1
 MYSQL_VERSION=""; [ -n "$2" ] && MYSQL_VERSION=$2
 SHELL_VERSION=""; [ -n "$3" ] && SHELL_VERSION=$3
-CONFIG_PACKAGE_NAME=mysql80-community-release-el8.rpm; [ -n "$4" ] && CONFIG_PACKAGE_NAME=$4
-CONFIG_PACKAGE_NAME_MINIMAL=mysql-cluster-community-minimal-release-el8.rpm; [ -n "$5" ] && CONFIG_PACKAGE_NAME_MINIMAL=$5
+CONFIG_PACKAGE_NAME=mysql80-community-release-el9.rpm; [ -n "$4" ] && CONFIG_PACKAGE_NAME=$4
+CONFIG_PACKAGE_NAME_MINIMAL=mysql-cluster-community-minimal-release-el9.rpm; [ -n "$5" ] && CONFIG_PACKAGE_NAME_MINIMAL=$5
 
 REPO_NAME_SERVER=mysql-cluster80-community-minimal; [ -n "$6" ] && REPO_NAME_SERVER=$6
 REPO_NAME_TOOLS=mysql-tools-community; [ -n "$7" ] && REPO_NAME_TOOLS=$7

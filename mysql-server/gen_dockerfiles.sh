@@ -20,8 +20,8 @@ set -e
 source ./VERSION
 
 REPO=https://repo.mysql.com; [ -n "$1" ] && REPO=$1
-CONFIG_PACKAGE_NAME=mysql80-community-release-el8.rpm; [ -n "$2" ] && CONFIG_PACKAGE_NAME=$2
-CONFIG_PACKAGE_NAME_MINIMAL=mysql-community-minimal-release-el8.rpm; [ -n "$3" ] && CONFIG_PACKAGE_NAME_MINIMAL=$3
+CONFIG_PACKAGE_NAME=mysql80-community-release-el9.rpm; [ -n "$2" ] && CONFIG_PACKAGE_NAME=$2
+CONFIG_PACKAGE_NAME_MINIMAL=mysql-community-minimal-release-el9.rpm; [ -n "$3" ] && CONFIG_PACKAGE_NAME_MINIMAL=$3
 
 REPO_NAME_SERVER=mysql80-community-minimal; [ -n "$4" ] && REPO_NAME_SERVER=$4
 REPO_NAME_TOOLS=mysql-tools-community; [ -n "$5" ] && REPO_NAME_TOOLS=$5

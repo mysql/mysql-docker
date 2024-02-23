@@ -13,7 +13,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-FROM container-registry.oracle.com/os/oraclelinux:8-slim
+FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
 ARG MYSQL_SERVER_PACKAGE=%%MYSQL_SERVER_PACKAGE%%
 ARG MYSQL_SHELL_PACKAGE=%%MYSQL_SHELL_PACKAGE%%
@@ -25,7 +25,7 @@ RUN rpm -U %%REPO%%/%%CONFIG_PACKAGE_NAME_MINIMAL%% \
 # Install server and shell 8.0
 RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
   && microdnf install -y --enablerepo=%%REPO_NAME_TOOLS%% $MYSQL_SHELL_PACKAGE \
-  && microdnf install -y --disablerepo=ol8_appstream \
+  && microdnf install -y --disablerepo=ol9_appstream \
    --enablerepo=%%REPO_NAME_SERVER%% $MYSQL_SERVER_PACKAGE \
   && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d

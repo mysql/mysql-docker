@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-FROM container-registry.oracle.com/os/oraclelinux:8-slim
+FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
 ARG MYSQL_CLIENT_PACKAGE=%%MYSQL_CLIENT_PACKAGE%%
 ARG MYSQL_ROUTER_PACKAGE=%%MYSQL_ROUTER_PACKAGE%%

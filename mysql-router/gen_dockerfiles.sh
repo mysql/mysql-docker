@@ -5,7 +5,7 @@ set -e
 source ./VERSION
 
 REPO=https://repo.mysql.com; [ -n "$1" ] && REPO=$1
-CONFIG_PACKAGE_NAME=mysql80-community-release-el8.rpm; [ -n "$2" ] && CONFIG_PACKAGE_NAME=$2
+CONFIG_PACKAGE_NAME=mysql80-community-release-el9.rpm; [ -n "$2" ] && CONFIG_PACKAGE_NAME=$2
 MYSQL_CLIENT_PACKAGE_NAME=mysql-community-client; [ -n "$3" ] && MYSQL_CLIENT_PACKAGE_NAME=$3
 MYSQL_ROUTER_PACKAGE_NAME=mysql-router-community; [ -n "$4" ] && MYSQL_ROUTER_PACKAGE_NAME=$4
 MYSQL_CLIENT_VERSION=mysql-community-client; [ -n "$5" ] && MYSQL_CLIENT_VERSION=$5
@@ -23,9 +23,6 @@ echo `ls`
 if [ ! -d "${MAJOR_VERSION}" ]; then
   mkdir -p "${MAJOR_VERSION}/inspec"
 fi
-echo `ls -lrt`
-echo 'inside 8.1'
-echo `ls -lrt 8.1`
 
 sed 's#%%MYSQL_CLIENT_PACKAGE%%#'"${MYSQL_CLIENT_PACKAGE}"'#g' template/Dockerfile > tmpFile
 sed -i 's#%%MYSQL_ROUTER_PACKAGE%%#'"${MYSQL_ROUTER_PACKAGE}"'#g' tmpFile
