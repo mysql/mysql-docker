@@ -24,7 +24,7 @@ RUN /usr/sbin/groupadd -g 999 -r mysqlrouter >/dev/null \
   && /usr/sbin/useradd -M -N -u 999 -g mysqlrouter -r -d /var/lib/mysqlrouter -s /bin/false \
       -c "MySQL Router" mysqlrouter \
   && rpm -U %%REPO%%/$CONFIG_PACKAGE_NAME \
-  && microdnf install -y --disablerepo=\* \
+  && microdnf install -y \
      --enablerepo=%%REPO_NAME_SERVER%% $MYSQL_CLIENT_PACKAGE \
   && microdnf install -y --disablerepo=\* \
      --enablerepo=%%REPO_NAME_TOOLS%% $MYSQL_ROUTER_PACKAGE \
