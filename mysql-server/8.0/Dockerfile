@@ -27,7 +27,7 @@ RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
   && microdnf install -y --enablerepo=mysql-tools-community $MYSQL_SHELL_PACKAGE \
   && microdnf install -y --disablerepo=ol9_appstream \
    --enablerepo=mysql80-community-minimal $MYSQL_SERVER_PACKAGE \
-  && microdnf remove -y mysql-community-minimal-release mysql80-community-release \
+  && microdnf remove -y mysql-community-minimal-release mysql84-community-release \
   && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d
 
