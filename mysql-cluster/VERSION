@@ -1,7 +1,23 @@
 IMAGE_VERSION=1.2.16-cluster
-LATEST="8.4"
+
+# LATEST is always set to the
+# current highest release, which is,
+# either 'innovation' or an LTS series
+# i.e. 9.7, or 10.7
+
+LATEST="innovation"
+
+
+
+# LATEST_LTS is set to the highest
+# LTS series currently being released
+# i.e. when 9.7 release will come it
+# will be set to 9.7 up till 10.7 and
+# then 10.7 and so on
+
 LATEST_LTS="8.4"
-LATEST_INNOVATION="9.0"
+
+
 
 # The value of key should be series
 # i.e. 8.0, 8.4, innovation, 9.7, etc.
@@ -11,11 +27,14 @@ LATEST_INNOVATION="9.0"
 declare -A MYSQL_CLUSTER_VERSIONS
 MYSQL_CLUSTER_VERSIONS["8.0"]=8.0.37
 MYSQL_CLUSTER_VERSIONS["8.4"]=8.4.0
+MYSQL_CLUSTER_VERSIONS["innovation"]=9.0.0
 
 declare -A MYSQL_SHELL_VERSIONS
 MYSQL_SHELL_VERSIONS["8.0"]=8.0.37
 MYSQL_SHELL_VERSIONS["8.4"]=8.4.0
+MYSQL_SHELL_VERSIONS["innovation"]=9.0.0
 
 declare -A FULL_SERVER_VERSIONS
 FULL_SERVER_VERSIONS["8.0"]="${MYSQL_CLUSTER_VERSIONS["8.0"]}-${IMAGE_VERSION}"
 FULL_SERVER_VERSIONS["8.4"]="${MYSQL_CLUSTER_VERSIONS["8.4"]}-${IMAGE_VERSION}"
+FULL_SERVER_VERSIONS["innovation"]="${MYSQL_CLUSTER_VERSIONS["innovation"]}-${IMAGE_VERSION}"

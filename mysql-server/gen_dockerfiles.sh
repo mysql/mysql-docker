@@ -35,9 +35,6 @@ MYSQL_CONFIG_PKG="mysql80-community-release"; [ -n "${11}" ] && MYSQL_CONFIG_PKG
 
 # Get the Major Version
 MAJOR_VERSION=${MYSQL_VERSION%.*}
-if [ $MAJOR_VERSION == $LATEST_INNOVATION ]; then
-    REPO_PATH="innovation"
-fi
 
 if [[ ${MYSQL_CONFIG_PKG_MINIMAL} =~ (community) ]]; then
    CONT_NAME="mysql-server"
