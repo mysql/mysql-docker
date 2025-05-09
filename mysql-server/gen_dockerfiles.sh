@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2017, 2023, Oracle and/or its affiliates.
+# Copyright (c) 2017, 2025, Oracle and/or its affiliates.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ declare -A SPEC_PORTS
 
 
 PORTS="3306 33060 33061"
-VALIDATE_CONFIG="output=\$(\"\$@\" --validate-config) || result=\$?"
+VALIDATE_CONFIG="output=\$(\"\$@\" --user=\$MYSQLD_USER --validate-config) || result=\$?"
 DOCKERFILE_TEMPLATES="template/Dockerfile"
 SPEC_PORTS="3306/tcp, 33060-33061/tcp"
 
