@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 set -e
 
-echo "[Entrypoint] MySQL Docker Image 8.4.5-1.2.21-server"
+echo "[Entrypoint] MySQL Docker Image 8.4.6-1.2.22-server"
 # Fetch value from server config
 # We use mysqld --verbose --help instead of my_print_defaults because the
 # latter only show values present in config files, and not server defaults
@@ -54,7 +54,7 @@ if [ "$1" = 'mysqld' ]; then
 	# Test that the server can start. We redirect stdout to /dev/null so
 	# only the error messages are left.
 	result=0
-	output=$("$@" --validate-config) || result=$?
+	output=$("$@" --user=$MYSQLD_USER --validate-config) || result=$?
 	if [ ! "$result" = "0" ]; then
 		echo >&2 '[Entrypoint] ERROR: Unable to start MySQL. Please check your configuration.'
 		echo >&2 "[Entrypoint] $output"
@@ -220,7 +220,7 @@ EOF
 		echo "[Entrypoint] MYSQL_INITIALIZE_ONLY is set, exiting without starting MySQL..."
 		exit 0
 	else
-		echo "[Entrypoint] Starting MySQL 8.4.5-1.2.21-server"
+		echo "[Entrypoint] Starting MySQL 8.4.6-1.2.22-server"
 	fi
 	# 4th value of /proc/$pid/stat is the ppid, same as getppid()
 	export MYSQLD_PARENT_PID=$(cat /proc/$$/stat|cut -d\  -f4)
