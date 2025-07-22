@@ -14,20 +14,20 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
-ARG MYSQL_CLIENT_PACKAGE=mysql-community-client-8.4.6
-ARG MYSQL_ROUTER_PACKAGE=mysql-router-community-8.4.6
+ARG MYSQL_CLIENT_PACKAGE=mysql-community-client-9.4.0
+ARG MYSQL_ROUTER_PACKAGE=mysql-router-community-9.4.0
 ARG CONFIG_PACKAGE_NAME=mysql84-community-release-el9.rpm
-ARG REPO_NAME_SERVER=mysql-8.4-lts-community
-ARG REPO_NAME_TOOLS=mysql-tools-8.4-lts-community
+ARG REPO_NAME_SERVER=mysql-innovation-community
+ARG REPO_NAME_TOOLS=mysql-tools-innovation-community
 
 RUN /usr/sbin/groupadd -g 999 -r mysqlrouter >/dev/null \
   && /usr/sbin/useradd -M -N -u 999 -g mysqlrouter -r -d /var/lib/mysqlrouter -s /bin/false \
       -c "MySQL Router" mysqlrouter \
   && rpm -U https://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/$CONFIG_PACKAGE_NAME \
   && microdnf install -y \
-     --enablerepo=mysql-8.4-lts-community $MYSQL_CLIENT_PACKAGE \
+     --enablerepo=mysql-innovation-community $MYSQL_CLIENT_PACKAGE \
   && microdnf install -y --disablerepo=\* \
-     --enablerepo=mysql-tools-8.4-lts-community $MYSQL_ROUTER_PACKAGE \
+     --enablerepo=mysql-tools-innovation-community $MYSQL_ROUTER_PACKAGE \
   && microdnf clean all
 
 COPY run.sh /run.sh
