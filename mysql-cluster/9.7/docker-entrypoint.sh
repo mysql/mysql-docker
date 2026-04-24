@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 set -e
 
-echo "[Entrypoint] MySQL Docker Image 8.4.9-1.2.25-cluster"
+echo "[Entrypoint] MySQL Docker Image 9.7.0-1.2.25-cluster"
 # Fetch value from server config
 # We use mysqld --verbose --help instead of my_print_defaults because the
 # latter only show values present in config files, and not server defaults
@@ -227,7 +227,7 @@ EOF
 		echo "[Entrypoint] MYSQL_INITIALIZE_ONLY is set, exiting without starting MySQL..."
 		exit 0
 	else
-		echo "[Entrypoint] Starting MySQL 8.4.9-1.2.25-cluster"
+		echo "[Entrypoint] Starting MySQL 9.7.0-1.2.25-cluster"
 	fi
 	export MYSQLD_PARENT_PID=$$ ; exec "$@" --user=
 else
