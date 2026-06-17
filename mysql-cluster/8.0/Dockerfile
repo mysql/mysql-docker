@@ -15,7 +15,7 @@
 
 FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-8.0.46
+ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-8.0.47
 ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.46
 
 # Setup repositories for minimal packages (all versions)
