@@ -11,10 +11,10 @@ control 'packages' do
   impact 0.5
   describe package('mysql-community-client') do
     it { should be_installed }
-    its ('version') { should match '9.7.0.*' }
+    its ('version') { should match '9.7.1.*' }
   end
   describe package('mysql-router-community') do
     it { should be_installed }
-    its ('version') { should match '9.7.0.*' }
+    its ('version') { should match '9.7.1.*' }
   end
 end

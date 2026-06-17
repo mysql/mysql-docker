@@ -14,8 +14,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
-ARG MYSQL_CLIENT_PACKAGE=mysql-community-client-9.7.0
-ARG MYSQL_ROUTER_PACKAGE=mysql-router-community-9.7.0
+ARG MYSQL_CLIENT_PACKAGE=mysql-community-client-9.7.1
+ARG MYSQL_ROUTER_PACKAGE=mysql-router-community-9.7.1
 ARG CONFIG_PACKAGE_NAME=mysql84-community-release-el9.rpm
 ARG REPO_NAME_SERVER=mysql-9.7-lts-community
 ARG REPO_NAME_TOOLS=mysql-tools-9.7-lts-community
