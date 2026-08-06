@@ -25,6 +25,7 @@ RUN rpm -U %%REPO%%/mysql-cluster-community-minimal-release-el7.rpm \
 # Install server and shell 8.0
 RUN yum install -y $MYSQL_SHELL_PACKAGE \
   && yum install -y $MYSQL_SERVER_PACKAGE --enablerepo=mysql-cluster%%REPO_VERSION%%-community-minimal\
+  && yum remove -y $(rpm -qa --qf '%{NAME} ' 'mysql*-release*') \
   && yum clean all \
   && mkdir /docker-entrypoint-initdb.d
 
@@ -42,4 +43,3 @@ ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
 EXPOSE %%PORTS%%
 CMD ["mysqld"]
-

@@ -27,6 +27,7 @@ RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
   && microdnf install -y --enablerepo=%%REPO_NAME_TOOLS%% $MYSQL_SHELL_PACKAGE \
   && microdnf install -y --disablerepo=ol9_appstream \
    --enablerepo=%%REPO_NAME_SERVER%% $MYSQL_SERVER_PACKAGE \
+  && microdnf remove -y $(rpm -qa --qf '%{NAME} ' 'mysql*-release*') \
   && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d
 
@@ -44,4 +45,3 @@ ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
 EXPOSE %%PORTS%%
 CMD ["mysqld"]
-
