@@ -15,8 +15,8 @@
 
 FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
-ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-8.4.11
-ARG MYSQL_SHELL_PACKAGE=mysql-shell-26.7.0
+ARG MYSQL_SERVER_PACKAGE=mysql-cluster-community-server-minimal-8.4.12
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-26.7.1
 
 # Setup repositories for minimal packages (all versions)
 RUN rpm -U https://repo.mysql.oraclecorp.com/mysql-uat/repos-stage/mysql-community-minimal-release-el9.rpm \
@@ -27,6 +27,7 @@ RUN microdnf update && echo "[main]" > /etc/dnf/dnf.conf \
   && microdnf install -y --enablerepo=mysql-tools-innovation-community $MYSQL_SHELL_PACKAGE \
   && microdnf install -y --disablerepo=ol9_appstream \
    --enablerepo=mysql-cluster-8.4-lts-community-minimal $MYSQL_SERVER_PACKAGE \
+  && microdnf remove -y $(rpm -qa --qf '%{NAME} ' 'mysql*-release*') \
   && microdnf clean all \
   && mkdir /docker-entrypoint-initdb.d
 
@@ -44,4 +45,3 @@ ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
 EXPOSE 3306 33060-33061 2202 1186
 CMD ["mysqld"]
-
