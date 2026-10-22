@@ -11,11 +11,11 @@ control 'packages' do
   impact 0.5
   describe package('mysql-cluster-community-server-minimal') do
     it { should be_installed }
-    its ('version') { should match '8.4.12.*' }
+    its ('version') { should match '8.4.13.*' }
   end
   describe package('mysql-shell') do
     it { should be_installed }
-    its ('version') { should match '26.7.1.*' }
+    its ('version') { should match '26.10.0.*' }
   end
   describe command("rpm -qa --qf '%{NAME}\\n' 'mysql*-release*'") do
     its('stdout') { should eq '' }
