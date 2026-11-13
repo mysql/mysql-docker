@@ -39,7 +39,7 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
     else
         SERVER_VERSION=${MYSQL_SERVER_VERSIONS["${MAJOR_VERSION}"]}
     fi
-    MAJOR_VERSION=${SERVER_VERSION%.*}
+    MAJOR_VERSION=$(cut -d. -f1,2 <<< "$SERVER_VERSION")
     if [[ ${BUILD_TYPE} =~ (commercial) ]]; then
       IMG_LOC="store/oracle/mysql-enterprise-server"
       CONT_NAME="mysql-enterprise-server-$MAJOR_VERSION"

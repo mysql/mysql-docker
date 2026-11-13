@@ -30,7 +30,7 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
    else
      ROUTER_VERSION=${MYSQL_ROUTER_VERSIONS["${MAJOR_VERSION}"]}
    fi
-   MAJOR_VERSION=${ROUTER_VERSION%.*}
+   MAJOR_VERSION=$(cut -d. -f1,2 <<< "$ROUTER_VERSION")
    podman run -d --rm -e MYSQL_HOST=x -e MYSQL_PORT=9 -e MYSQL_USER=x -e MYSQL_PASSWORD=x -e MYSQL_INNODB_CLUSTER_MEMBERS=1 --name "mysql-router-$MAJOR_VERSION" mysql/mysql-router:$MAJOR_VERSION-$ARCH sleep 5000
    export DOCKER_HOST=unix:///tmp/podman.sock
    podman system service --time=0 ${DOCKER_HOST} & DOCKER_SOCK_PID="$!"

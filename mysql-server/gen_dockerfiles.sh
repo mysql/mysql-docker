@@ -35,7 +35,7 @@ MYSQL_CONFIG_PKG="mysql80-community-release"; [ -n "${11}" ] && MYSQL_CONFIG_PKG
 DEBUG_FLAGS=""; [ -n "${12}" ] && DEBUG_FLAGS=${12}
 
 # Get the Major Version
-MAJOR_VERSION=${MYSQL_VERSION%.*}
+MAJOR_VERSION=$(cut -d. -f1,2 <<< "$MYSQL_VERSION")
 
 if [[ ${MYSQL_CONFIG_PKG_MINIMAL} =~ (community) ]]; then
    CONT_NAME="mysql-server"
