@@ -41,5 +41,5 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
         SERVER_VERSION=${MYSQL_SERVER_VERSIONS["${MAJOR_VERSION}"]}
     fi
     MAJOR_VERSION=$(cut -d. -f1,2 <<< "$SERVER_VERSION")
-    docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$MAJOR_VERSION"-$ARCH "$MAJOR_VERSION"
+    docker build --pull --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" -t $IMG_LOC:"$MAJOR_VERSION"-$ARCH "$MAJOR_VERSION"
 done

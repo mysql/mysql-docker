@@ -27,5 +27,5 @@ for MAJOR_VERSION in "${MAJOR_VERSIONS[@]}"; do
     ROUTER_VERSION=${MYSQL_ROUTER_VERSIONS["${MAJOR_VERSION}"]}
   fi
   MAJOR_VERSION=$(cut -d. -f1,2 <<< "$ROUTER_VERSION")
-  docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$http_proxy --build-arg no_proxy=$no_proxy -t mysql/mysql-router:$MAJOR_VERSION-$ARCH $MAJOR_VERSION
+  docker build --pull --build-arg http_proxy=$http_proxy --build-arg https_proxy=$http_proxy --build-arg no_proxy=$no_proxy -t mysql/mysql-router:$MAJOR_VERSION-$ARCH $MAJOR_VERSION
 done
